@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Mailbox</title>
+  <desc id="desc">An envelope feeding three independent session paths</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="1" stop-color="#cbd7ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="15" fill="#23315f"/>
+  <path d="M12 20a6 6 0 0 1 6-6h28a6 6 0 0 1 6 6v22a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6Z" fill="url(#paper)"/>
+  <path d="m15 18 17 14 17-14" fill="none" stroke="#4867c7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20 49v6m12-6v6m12-6v6" stroke="#8fa8ff" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="20" cy="56" r="3" fill="#70e0b1"/>
+  <circle cx="32" cy="56" r="3" fill="#70e0b1"/>
+  <circle cx="44" cy="56" r="3" fill="#70e0b1"/>
+</svg>

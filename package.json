@@ -1,0 +1,41 @@
+{
+  "name": "@local/dsh-agent-mailbox",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Host-only deterministic external-event subscriptions and per-Session Mailbox delivery for DeepSeek Harness.",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-locale"]
+    }
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "lib",
+    "test",
+    "scripts",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "scripts": {
+    "check": "node --check index.js && node --check client.js && node --check lib/config.js && node --check lib/mailbox.js && node --check lib/model.js && node --check lib/scheduler.js && node --check lib/settings-api.js && node --check lib/source-settings.js && node --check lib/store.js && node --check lib/tools.js && node --check lib/util.js",
+    "validate": "node scripts/validate.mjs",
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT"
+}

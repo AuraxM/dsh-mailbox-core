@@ -1,0 +1,4 @@
+- insert:
+    - id: agent-mailbox
+      name: '@local/dsh-agent-mailbox'
+      config: {}
