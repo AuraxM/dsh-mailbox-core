@@ -27,6 +27,37 @@ export async function apply(ctx, rawConfig = {}) {
     flush: (session) => ctx.sessions.flush(session),
   });
   const scopedDisposers = new Map();
+  let archiveChain = Promise.resolve();
+
+  function applyArchivedSessions(ids) {
+    archiveChain = archiveChain.then(async () => {
+      try {
+        const result = await service.setArchivedSessions(ids);
+        if (result.discarded) logger("info", `agent-mailbox: discarded ${result.discarded} queued Delivery records for archived Sessions`);
+      } catch (error) {
+        logger("warn", `agent-mailbox: could not apply archived Session state: ${errorMessage(error)}`);
+      }
+    });
+    return archiveChain;
+  }
+
+  function applyWorkspaceChange(change) {
+    if (change?.domain !== "workspace" || change.table !== "" || change.key !== "") return;
+    const archived = change.value?.archivedSessionIds;
+    if (Array.isArray(archived)) applyArchivedSessions(archived);
+  }
+  ctx.on("domain/changed", applyWorkspaceChange);
+
+  // The workspace domain is opened by the workspace registry before a web
+  // Session list is usable. Reading its archive set once closes the startup
+  // race; domain/changed applies later archive/unarchive changes.
+  try {
+    const workspaceDomain = ctx.storageDomain.get?.("workspace");
+    const archived = workspaceDomain?.global?.get?.()?.archivedSessionIds;
+    if (Array.isArray(archived)) applyArchivedSessions(archived);
+  } catch (error) {
+    logger("warn", `agent-mailbox: stored archive snapshot unavailable: ${errorMessage(error)}`);
+  }
 
   function attach(agent) {
     const sessionId = String(agent.id);

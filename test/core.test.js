@@ -2,6 +2,24 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createCore, deliveries, envelope, fakeAgent, registerLark, subscribe, waitFor } from "./helpers.js";
 
+test("archived Sessions receive no new Delivery and lose queued backlog", async (t) => {
+  const { service, repository } = createCore();
+  t.after(() => service.close());
+  const source = registerLark(service);
+  await subscribe(service, "session-a");
+  await service.setArchivedSessions(["session-a"]);
+  const archived = await source.publish(envelope("archived-new"));
+  assert.equal(archived.status, "accepted");
+  assert.equal(archived.deliveryCount, 0);
+  assert.equal(deliveries(repository).length, 0);
+  await service.setArchivedSessions([]);
+  await source.publish(envelope("after-unarchive"));
+  assert.equal(deliveries(repository).length, 1);
+  const discarded = await service.setArchivedSessions(["session-a"]);
+  assert.equal(discarded.discarded, 1);
+  assert.equal(deliveries(repository).length, 0);
+});
+
 test("same source event retry is globally deduplicated", async (t) => {
   const { service, repository, global } = createCore();
   t.after(() => service.close());

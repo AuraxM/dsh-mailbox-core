@@ -52,6 +52,7 @@ window.__ModuleLoader__.load({
       pickerLoadFailed: "加载会话失败",
       pickerClose: "关闭",
       pickerAvailable: "可选会话",
+      pickerSortHint: "最近活跃优先",
       pickerSelected: "已选择 {n} 个会话",
       pickerNoSelected: "还没有选择会话",
       pickerClear: "清空",
@@ -128,6 +129,7 @@ window.__ModuleLoader__.load({
       pickerLoadFailed: "Could not load conversations",
       pickerClose: "Close",
       pickerAvailable: "Available conversations",
+      pickerSortHint: "Most recently active first",
       pickerSelected: "{n} selected",
       pickerNoSelected: "No conversations selected",
       pickerClear: "Clear",
@@ -195,7 +197,7 @@ window.__ModuleLoader__.load({
       ".amb-picker-drawer{width:min(980px,96vw);height:min(700px,90vh);display:flex;flex-direction:column;border:1px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-1);box-shadow:0 24px 80px rgba(0,0,0,.35);overflow:hidden}",
       ".amb-picker-head{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-bottom:1px solid var(--dsw-alias-border-l1);flex:none}.amb-picker-title{font-size:15px;font-weight:650;line-height:1.3}.amb-picker-sub{font-size:11px;color:var(--dsw-alias-label-secondary);margin-top:4px;line-height:1.45}",
       ".amb-picker-main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.9fr);min-height:0;flex:1}.amb-picker-pane{display:flex;flex-direction:column;min-height:0;min-width:0}.amb-picker-pane + .amb-picker-pane{border-left:1px solid var(--dsw-alias-border-l1)}",
-      ".amb-picker-pane-head{display:flex;align-items:center;gap:8px;padding:12px 14px 8px;font-size:11px;color:var(--dsw-alias-label-secondary);flex:none}",
+      ".amb-picker-pane-head{display:flex;align-items:center;gap:8px;padding:12px 14px 8px;font-size:11px;color:var(--dsw-alias-label-secondary);flex:none}.amb-picker-pane-note{color:var(--dsw-alias-label-tertiary);font-size:10px}",
       ".amb-picker-search{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--dsw-alias-border-l1);flex:none}.amb-picker-search input{flex:1;min-width:0}",
       ".amb-picker-list,.amb-picker-selected-list{overflow:auto;padding:6px 8px;flex:1;min-height:0}",
       ".amb-picker-row{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;box-sizing:border-box}.amb-picker-row:hover{background:var(--dsw-alias-bg-base)}.amb-picker-row.on{border-color:var(--dsw-alias-brand-primary);background:var(--dsw-alias-bg-base)}",
@@ -388,7 +390,7 @@ window.__ModuleLoader__.load({
           ),
           h("div", { className: "amb-picker-main" },
             h("div", { className: "amb-picker-pane" },
-              h("div", { className: "amb-picker-pane-head" }, t("pickerAvailable"), picker.loading ? h("span", { className: "amb-spacer" }) : null, picker.loading ? h("span", null, t("refreshing")) : null),
+              h("div", { className: "amb-picker-pane-head" }, t("pickerAvailable"), h("span", { className: "amb-picker-pane-note" }, t("pickerSortHint")), h("span", { className: "amb-spacer" }), picker.loading ? h("span", null, t("refreshing")) : null),
               h("div", { className: "amb-picker-search" },
                 h("input", {
                   className: "amb-input grow",
@@ -449,6 +451,12 @@ window.__ModuleLoader__.load({
         )
       );
       return ReactDOM.createPortal(content, document.body);
+    }
+
+    function isFieldVisible(field, draft) {
+      if (!field.visibleWhen) return true;
+      var actual = draft ? draft[field.visibleWhen.key] : undefined;
+      return Array.isArray(field.visibleWhen.in) && field.visibleWhen.in.indexOf(actual) >= 0;
     }
 
     function Field(props) {
@@ -553,12 +561,12 @@ window.__ModuleLoader__.load({
           for (var j = 0; j < fields.length; j += 1) {
             var field = fields[j];
             var values = draft[field.key];
-            if (field.suggestionsAction && Array.isArray(values) && values.some(function (value) { return !labelFor(source.sourceKey, value); })) {
+            if (isFieldVisible(field, draft) && field.suggestionsAction && Array.isArray(values) && values.some(function (value) { return !labelFor(source.sourceKey, value); })) {
               if (typeof props.onLoadLabels === "function") props.onLoadLabels(source, field);
             }
           }
         }
-      }, []);
+      }, [draft.identityMode]);
       return h("section", { className: "amb-card" },
         h("div", { className: "amb-card-head" },
           h("div", null,
@@ -578,6 +586,7 @@ window.__ModuleLoader__.load({
               h("h3", { className: "amb-group-title" }, pick(group.titleI18n, group.id)),
               group.descriptionI18n ? h("p", { className: "amb-group-desc" }, pick(group.descriptionI18n)) : null,
               (group.fields || []).map(function (field) {
+                if (!isFieldVisible(field, draft)) return null;
                 return h(Field, {
                   key: field.key,
                   field: field,

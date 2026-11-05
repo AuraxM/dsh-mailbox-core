@@ -9,6 +9,8 @@ test("client bundle materializes CommonJS exports and registers the Settings sec
   assert.equal(source.includes("Advanced: enter ID manually"), false);
   assert.match(source, /amb-picker-overlay/);
   assert.match(source, /pickerApply/);
+  assert.match(source, /isFieldVisible/);
+  assert.match(source, /pickerSortHint/);
   let registration;
   vm.runInNewContext(source, {
     window: { __ModuleLoader__: { load(value) { registration = value; } } },

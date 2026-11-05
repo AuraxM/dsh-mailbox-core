@@ -6,6 +6,7 @@ import { MailboxRepository } from "../lib/store.js";
 import { AgentMailbox } from "../lib/mailbox.js";
 import { createSettingsRouter } from "../lib/settings-api.js";
 import { normalizeConfig } from "../lib/config.js";
+import { normalizeSourceSettings } from "../lib/source-settings.js";
 
 const schema = {
   version: 1,
@@ -50,6 +51,27 @@ function register(service, options = {}) {
   });
   return source;
 }
+
+test("source settings support conditional field visibility with a known dependency", () => {
+  const conditional = {
+    version: 1,
+    titleI18n: { zh: "来源", en: "Source" },
+    groups: [{
+      id: "main",
+      titleI18n: { zh: "主要", en: "Main" },
+      fields: [
+        { key: "mode", type: "select", labelI18n: { zh: "模式", en: "Mode" }, options: [{ value: "all", labelI18n: { zh: "全部", en: "All" } }] },
+        { key: "list", type: "string-list", labelI18n: { zh: "列表", en: "List" }, visibleWhen: { key: "mode", in: ["selected"] } },
+      ],
+    }],
+  };
+  const normalized = normalizeSourceSettings(conditional);
+  assert.deepEqual(normalized.groups[0].fields[1].visibleWhen, { key: "mode", in: ["selected"] });
+  assert.throws(
+    () => normalizeSourceSettings({ ...conditional, groups: [{ ...conditional.groups[0], fields: [{ ...conditional.groups[0].fields[1], visibleWhen: { key: "missing", in: ["selected"] } }] }] }),
+    /unknown field/,
+  );
+});
 
 test("source settings initialize from safe defaults and persist revisions", async (t) => {
   const { service, global } = createCore();
