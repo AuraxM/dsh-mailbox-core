@@ -11,6 +11,12 @@ test("client bundle materializes CommonJS exports and registers the Settings sec
   assert.match(source, /pickerApply/);
   assert.match(source, /isFieldVisible/);
   assert.match(source, /pickerSortHint/);
+  assert.match(source, /jnpmEnvironment/);
+  assert.match(source, /remote\.credentials/);
+  assert.match(source, /source\.settings\.credentials/);
+  assert.match(source, /definition\.secret !== false/);
+  assert.match(source, /chooseConversationsProjects/);
+  assert.match(source, /type: secret \? "password" : "text"/);
   let registration;
   vm.runInNewContext(source, {
     window: { __ModuleLoader__: { load(value) { registration = value; } } },
@@ -31,7 +37,7 @@ test("client bundle materializes CommonJS exports and registers the Settings sec
     assert.equal(specifier, "react-dom");
     return reactDom;
   });
-  assert.deepEqual([...exported.inject], ["slots", "locale"]);
+  assert.deepEqual([...exported.inject], ["slots", "locale", "remote", "remote.credentials"]);
   const registered = [];
   const locale = {
     bind() { return (key) => key; },
@@ -51,4 +57,74 @@ test("client bundle materializes CommonJS exports and registers the Settings sec
   assert.equal(registered.length, 1);
   assert.equal(registered[0].name, "settings.section");
   assert.equal(registered[0].id, "agent-mailbox");
+});
+
+test("source cards default to collapsed and toggle their settings accessibly", () => {
+  let source = readFileSync(new URL("../client.js", import.meta.url), "utf8");
+  const exportMarker = "exports.apply = apply;";
+  assert.ok(source.includes(exportMarker));
+  source = source.replace(exportMarker, "exports.__SourceCard = SourceCard;\n    " + exportMarker);
+  let registration;
+  vm.runInNewContext(source, {
+    window: { __ModuleLoader__: { load(value) { registration = value; } } },
+    Symbol,
+    Object,
+    console,
+  });
+  let collapsed;
+  let stateInitialized = false;
+  const react = {
+    createElement(type, props, ...children) { return { type, props: props || {}, children }; },
+    useState(initial) {
+      if (!stateInitialized) {
+        collapsed = initial;
+        stateInitialized = true;
+      }
+      return [collapsed, (next) => { collapsed = typeof next === "function" ? next(collapsed) : next; }];
+    },
+    useEffect() {},
+  };
+  const exported = registration.factory((specifier) => {
+    if (specifier === "react") return react;
+    return { createPortal(node) { return node; } };
+  });
+  const props = {
+    source: {
+      sourceKey: "lark:main",
+      sourceId: "lark",
+      instance: "main",
+      displayName: "Lark",
+      revision: 4,
+      config: { enabled: true },
+      status: { state: "connected" },
+      settings: { groups: [] },
+    },
+    draft: { enabled: true },
+    picker: null,
+  };
+  let card = exported.__SourceCard(props);
+  assert.equal(card.type, "section");
+  assert.equal(card.props.className, "amb-card collapsed");
+  let header = card.children[0];
+  let content = card.children[1];
+  assert.equal(header.type, "button");
+  assert.equal(header.props["aria-expanded"], "false");
+  assert.equal(header.props["aria-controls"], content.props.id);
+  assert.match(header.props["aria-label"], /展开配置/);
+  assert.equal(content.props.hidden, true);
+
+  header.props.onClick();
+  card = exported.__SourceCard(props);
+  header = card.children[0];
+  content = card.children[1];
+  assert.equal(card.props.className, "amb-card");
+  assert.equal(header.props["aria-expanded"], "true");
+  assert.match(header.props["aria-label"], /收起配置/);
+  assert.equal(content.props.hidden, false);
+
+  header.props.onClick();
+  card = exported.__SourceCard({ ...props, draft: { enabled: false } });
+  assert.equal(card.children[1].props.hidden, true);
+  const dirtyBadge = card.children[0].children.find((child) => child?.props?.className === "amb-badge dirty");
+  assert.ok(dirtyBadge, "collapsed cards keep unsaved changes visible");
 });

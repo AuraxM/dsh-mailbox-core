@@ -73,6 +73,28 @@ test("source settings support conditional field visibility with a known dependen
   );
 });
 
+test("source settings declare bounded credential controls without accepting secrets in config", () => {
+  const normalized = normalizeSourceSettings({
+    ...schema,
+    credentials: [
+      { ref: "SERVICE_USERNAME", labelI18n: { zh: "用户名", en: "Username" }, secret: false },
+      { ref: "SERVICE_TOKEN", labelI18n: { zh: "令牌", en: "Token" }, placeholderI18n: { zh: "输入令牌", en: "Enter token" } },
+    ],
+  });
+  assert.equal(normalized.credentials.length, 2);
+  assert.equal(normalized.credentials[0].secret, false);
+  assert.equal(normalized.credentials[1].secret, undefined);
+  assert.equal(normalized.groups[0].fields.some((field) => /token|secret|password/i.test(field.key)), false);
+  assert.throws(
+    () => normalizeSourceSettings({ ...schema, credentials: [{ ref: "SERVICE_TOKEN", labelI18n: "Token" }, { ref: "SERVICE_TOKEN", labelI18n: "Token" }] }),
+    /duplicate credential reference/,
+  );
+  assert.throws(
+    () => normalizeSourceSettings({ ...schema, credentials: [{ ref: "SERVICE_TOKEN", labelI18n: "Token", secret: "yes" }] }),
+    /secret must be boolean/,
+  );
+});
+
 test("source settings initialize from safe defaults and persist revisions", async (t) => {
   const { service, global } = createCore();
   t.after(() => service.close());

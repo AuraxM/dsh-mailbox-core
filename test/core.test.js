@@ -12,12 +12,14 @@ test("archived Sessions receive no new Delivery and lose queued backlog", async 
   assert.equal(archived.status, "accepted");
   assert.equal(archived.deliveryCount, 0);
   assert.equal(deliveries(repository).length, 0);
+  assert.equal(repository.read((state) => Object.keys(state.mails).length), 0);
   await service.setArchivedSessions([]);
   await source.publish(envelope("after-unarchive"));
   assert.equal(deliveries(repository).length, 1);
   const discarded = await service.setArchivedSessions(["session-a"]);
   assert.equal(discarded.discarded, 1);
   assert.equal(deliveries(repository).length, 0);
+  assert.equal(repository.read((state) => Object.keys(state.mails).length), 0);
 });
 
 test("same source event retry is globally deduplicated", async (t) => {
@@ -70,8 +72,8 @@ test("multiple matching Subscriptions in one Session create one Delivery with th
   assert.deepEqual(delivery.matchedSubscriptionIds, [broad.subscriptionId, narrow.subscriptionId].sort());
 });
 
-test("Mail without a Subscription is persisted without Delivery or wake-up", async (t) => {
-  const { service, repository } = createCore();
+test("Mail without a Subscription stores only a dedup marker without Delivery or wake-up", async (t) => {
+  const { service, repository, global } = createCore();
   t.after(() => service.close());
   const source = registerLark(service);
   const agent = fakeAgent("session-a", "idle");
@@ -80,10 +82,14 @@ test("Mail without a Subscription is persisted without Delivery or wake-up", asy
   await new Promise((resolve) => setTimeout(resolve, 30));
   assert.equal(result.status, "accepted");
   assert.equal(result.deliveryCount, 0);
-  assert.equal(repository.read((state) => Object.keys(state.mails).length), 1);
+  assert.equal(repository.read((state) => Object.keys(state.mails).length), 0);
+  assert.equal(repository.read((state) => state.dedup[JSON.stringify(["lark", "main", "no-subscriber"])]?.deliveryCount), 0);
   assert.equal(deliveries(repository).length, 0);
   assert.equal(agent.injected.length, 0);
   assert.equal(agent.followups.length, 0);
+  const writes = global.writes;
+  assert.deepEqual(await source.publish(envelope("no-subscriber")), { status: "duplicate", mailId: result.mailId, deliveryCount: 0 });
+  assert.equal(global.writes, writes);
 });
 
 test("a new Subscription does not backfill old Mail", async (t) => {

@@ -1,12 +1,13 @@
 {
   "name": "@local/dsh-agent-mailbox",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "private": true,
   "type": "module",
-  "description": "Host-only deterministic external-event subscriptions and per-Session Mailbox delivery for DeepSeek Harness.",
+  "description": "Host-only external-event subscriptions with durable per-Session delivery and optional PTC-tested JavaScript filters.",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
+    "./filter-runtime": "./lib/filter-runtime.js",
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg",
     "./package.json": "./package.json"
@@ -33,7 +34,7 @@
     "README.md"
   ],
   "scripts": {
-    "check": "node --check index.js && node --check client.js && node --check lib/config.js && node --check lib/mailbox.js && node --check lib/model.js && node --check lib/scheduler.js && node --check lib/settings-api.js && node --check lib/source-settings.js && node --check lib/store.js && node --check lib/tools.js && node --check lib/util.js",
+    "check": "node --check index.js && node --check client.js && node --check lib/config.js && node --check lib/filter-runtime.js && node --check lib/mailbox.js && node --check lib/model.js && node --check lib/retention.js && node --check lib/scheduler.js && node --check lib/settings-api.js && node --check lib/source-settings.js && node --check lib/store.js && node --check lib/tools.js && node --check lib/util.js",
     "validate": "node scripts/validate.mjs",
     "test": "node --test test/*.test.js"
   },

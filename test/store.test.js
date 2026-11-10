@@ -3,6 +3,19 @@ import { test } from "node:test";
 import { createCore, deliveries, envelope, registerLark, subscribe, testConfig } from "./helpers.js";
 import { mailboxDomainSpec } from "../lib/model.js";
 
+async function settleQueued(repository) {
+  await repository.transact((state) => {
+    const now = new Date().toISOString();
+    for (const delivery of Object.values(state.deliveries)) {
+      if (delivery.state !== "queued") continue;
+      delivery.state = "delivered";
+      delivery.deliveredAt = now;
+      delivery.updatedAt = now;
+    }
+    return { value: true };
+  });
+}
+
 test("Domain name is a storage-safe unit identifier", () => {
   // dsh-storage rejects hyphens in domain/table unit names.
   assert.match(mailboxDomainSpec.name, /^[a-z][a-z0-9_]*$/);
@@ -65,7 +78,7 @@ test("concurrent publish, Subscription updates, and Delivery writes serialize wi
   }
   const results = await Promise.all(operations);
   assert.ok(results.every((result) => result.status === undefined || ["accepted", "duplicate"].includes(result.status)));
-  assert.equal(repository.read((state) => Object.keys(state.mails).length), 30);
+  assert.equal(repository.read((state) => Object.keys(state.mails).length), deliveries(repository).length);
   assert.equal(repository.read((state) => Object.keys(state.dedup).length), 30);
   await (await import("./helpers.js")).waitFor(() => deliveries(repository).length > 0 && deliveries(repository).every((delivery) => delivery.state === "delivered"), "concurrent deliveries");
   assert.ok(deliveries(repository).length > 0);
@@ -76,13 +89,15 @@ test("capacity prunes only settled Mail and preserves dedup tombstones", async (
   const { service, repository } = createCore({ config: testConfig({ maxMails: 2, maxDedup: 3 }) });
   t.after(() => service.close());
   const source = registerLark(service);
+  await subscribe(service, "session-a");
   const first = await source.publish(envelope("retention-1"));
   await source.publish(envelope("retention-2"));
+  await settleQueued(repository);
   await source.publish(envelope("retention-3"));
   assert.equal(repository.read((state) => Object.keys(state.mails).length), 2);
   assert.equal(repository.read((state) => Object.keys(state.dedup).length), 3);
   const duplicate = await source.publish(envelope("retention-1"));
-  assert.deepEqual(duplicate, { status: "duplicate", mailId: first.mailId, deliveryCount: 0 });
+  assert.deepEqual(duplicate, { status: "duplicate", mailId: first.mailId, deliveryCount: 1 });
   assert.equal(repository.read((state) => Object.keys(state.mails).length), 2);
 });
 
@@ -90,10 +105,25 @@ test("dedup pressure reclaims tombstones before otherwise healthy Mail history",
   const { service, repository } = createCore({ config: testConfig({ maxMails: 10, maxDedup: 2 }) });
   t.after(() => service.close());
   const source = registerLark(service);
+  await subscribe(service, "session-a");
   await source.publish(envelope("dedup-retention-1"));
   await source.publish(envelope("dedup-retention-2"));
+  await settleQueued(repository);
   await source.publish(envelope("dedup-retention-3"));
   assert.deepEqual(repository.read((state) => Object.values(state.mails).map((mail) => mail.eventId).sort()), ["dedup-retention-2", "dedup-retention-3"]);
+  assert.equal(repository.read((state) => Object.keys(state.dedup).length), 2);
+});
+
+test("unmatched events need only dedup capacity when Mail storage is full", async (t) => {
+  const { service, repository } = createCore({ config: testConfig({ maxMails: 1 }) });
+  t.after(() => service.close());
+  const source = registerLark(service);
+  await subscribe(service, "session-a", { textContainsAny: ["keep"] });
+  await source.publish(envelope("matched", "keep"));
+  const result = await source.publish(envelope("unmatched", "drop"));
+  assert.equal(result.status, "accepted");
+  assert.equal(result.deliveryCount, 0);
+  assert.equal(repository.read((state) => Object.keys(state.mails).length), 1);
   assert.equal(repository.read((state) => Object.keys(state.dedup).length), 2);
 });
 

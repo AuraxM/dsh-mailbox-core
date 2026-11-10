@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Agent Mailbox",
-    "description": "Deterministic external-event Subscriptions with durable per-Session Delivery and per-source Settings for allowlists, auth status, message types, and rate limits."
+    "description": "External-event subscriptions with durable per-Session delivery, PTC-tested JavaScript filters, and per-source scope, authentication, and rate-limit Settings."
   }
 }

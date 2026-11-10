@@ -34,7 +34,9 @@ window.__ModuleLoader__.load({
       configInvalid: "已保存配置无法通过当前校验；来源已回退到安全默认值",
       instance: "实例",
       revision: "配置版本",
-      overviewMails: "已存邮件",
+      collapseSource: "收起配置",
+      expandSource: "展开配置",
+      overviewMails: "暂存邮件",
       overviewPending: "待投递",
       overviewSubscriptions: "订阅",
       sourceCount: "个来源",
@@ -83,6 +85,37 @@ window.__ModuleLoader__.load({
       pickerSearchFailed: "搜索失败",
       saveBlocked: "当前配置不能保存：请检查必填项和来源状态。",
       configuredAt: "最后保存",
+      jnpmGroupTitle: "JNPM 工单系统",
+      jnpmEnvironment: "选择环境",
+      credentialTitle: "JNPM Token",
+      credentialHint: "Token 仅写入 Harness 凭证服务，不进入来源配置 JSON；保存后立即用于后续只读请求。",
+      credentialPlaceholder: "输入 JNPM Token",
+      credentialSave: "保存 Token",
+      credentialClear: "清除 Token",
+      credentialConfigured: "Token 已配置",
+      credentialMissing: "Token 未配置",
+      credentialSaved: "Token 已保存到凭证服务",
+      credentialCleared: "Token 已清除",
+      credentialClearedFallback: "已清除可写凭证；当前仍使用环境变量中的只读 Token",
+      credentialSaveFailed: "Token 保存失败",
+      credentialStatusFailed: "Token 状态读取失败",
+      credentialClearFailed: "Token 清除失败",
+      credentialReadOnly: "当前凭证来源为只读，不能在此修改",
+      credentialSource: "凭证来源",
+      chooseConversationsProjects: "选择项目",
+      pickerTitleProjects: "选择要监控的项目",
+      pickerSubtitleProjects: "只有选中项目的新工单事件才会进入 Agent 上下文。",
+      pickerHintProjects: "点击项目切换选中状态；应用后请点击设置页的“保存”使其生效。",
+      pickerSearchProjects: "搜索项目名称",
+      pickerEmptyProjects: "没有匹配的项目",
+      pickerLoadFailedProjects: "加载项目失败",
+      pickerAvailableProjects: "可选项目",
+      pickerSortHintProjects: "按项目列表顺序",
+      pickerSelectedProjects: "已选择 {n} 个项目",
+      pickerNoSelectedProjects: "还没有选择项目",
+      pickerUnnamedProjects: "未命名项目",
+      configuredConversationProjects: "已配置项目",
+      selectedSummaryProjects: "已选择 {n} 个项目",
       runtimeLimits: "核心容量",
       textLimit: "每条输入都有长度与数量限制；超限的事件会被来源丢弃或由核心返回背压。",
     };
@@ -111,7 +144,9 @@ window.__ModuleLoader__.load({
       configInvalid: "The stored configuration no longer validates; the source fell back to safe defaults.",
       instance: "Instance",
       revision: "Config revision",
-      overviewMails: "Stored mail",
+      collapseSource: "Collapse settings",
+      expandSource: "Expand settings",
+      overviewMails: "Retained mail",
       overviewPending: "Pending",
       overviewSubscriptions: "Subscriptions",
       sourceCount: "sources",
@@ -160,6 +195,37 @@ window.__ModuleLoader__.load({
       pickerSearchFailed: "Search failed",
       saveBlocked: "This configuration cannot be saved. Check required fields and source status.",
       configuredAt: "Last saved",
+      jnpmGroupTitle: "JNPM issue tracking",
+      jnpmEnvironment: "Environment",
+      credentialTitle: "JNPM token",
+      credentialHint: "The token is stored only in Harness credentials, never in source configuration JSON, and is used by subsequent read-only requests.",
+      credentialPlaceholder: "Enter a JNPM token",
+      credentialSave: "Save token",
+      credentialClear: "Clear token",
+      credentialConfigured: "Token configured",
+      credentialMissing: "No token configured",
+      credentialSaved: "Token saved to Harness credentials",
+      credentialCleared: "Token cleared",
+      credentialClearedFallback: "Writable credential cleared; the read-only environment token is still in use",
+      credentialSaveFailed: "Could not save token",
+      credentialStatusFailed: "Could not read token status",
+      credentialClearFailed: "Could not clear token",
+      credentialReadOnly: "This credential source is read-only and cannot be changed here",
+      credentialSource: "Credential source",
+      chooseConversationsProjects: "Choose projects",
+      pickerTitleProjects: "Choose projects to monitor",
+      pickerSubtitleProjects: "Only new issue events from selected projects enter the Agent context.",
+      pickerHintProjects: "Click a project to toggle it; after Apply, click Save on the settings card.",
+      pickerSearchProjects: "Search project name",
+      pickerEmptyProjects: "No matching projects",
+      pickerLoadFailedProjects: "Could not load projects",
+      pickerAvailableProjects: "Available projects",
+      pickerSortHintProjects: "Project list order",
+      pickerSelectedProjects: "{n} projects selected",
+      pickerNoSelectedProjects: "No projects selected",
+      pickerUnnamedProjects: "Unnamed project",
+      configuredConversationProjects: "Configured project",
+      selectedSummaryProjects: "{n} projects selected",
       runtimeLimits: "Core capacity",
       textLimit: "Every input is bounded; oversized events are dropped by the source or returned as backpressure by the core.",
     };
@@ -173,15 +239,17 @@ window.__ModuleLoader__.load({
       ".amb-btn:hover:not(:disabled){border-color:var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}",
       ".amb-btn.primary{background:var(--dsw-alias-brand-primary);border-color:var(--dsw-alias-brand-primary);color:var(--dsw-alias-bg-base);font-weight:600}",
       ".amb-btn.danger:hover:not(:disabled){border-color:var(--dsw-alias-state-error-primary);color:var(--dsw-alias-state-error-primary)}",
-      ".amb-btn:disabled{opacity:.45;cursor:default}.amb-btn:focus-visible,.amb-input:focus-visible,.amb-select:focus-visible,.amb-switch:focus-visible,.amb-chip button:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px}",
+      ".amb-btn:disabled{opacity:.45;cursor:default}.amb-btn:focus-visible,.amb-input:focus-visible,.amb-select:focus-visible,.amb-switch:focus-visible,.amb-chip button:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px}.amb-card-head:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-3px}",
       ".amb-overview{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:10px 12px;margin:0 0 12px;border:1px solid var(--dsw-alias-border-l1);border-radius:8px;background:var(--dsw-alias-bg-layer-1)}",
       ".amb-stat{display:flex;align-items:baseline;gap:6px;font-size:12px;color:var(--dsw-alias-label-secondary)}.amb-stat b{font-size:15px;color:var(--dsw-alias-label-primary);font-variant-numeric:tabular-nums}.amb-overview .amb-btn{margin-left:auto}",
       ".amb-note{display:flex;gap:8px;align-items:flex-start;padding:9px 11px;margin:0 0 16px;border-left:3px solid var(--dsw-alias-state-warn-primary);border-radius:5px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:12px}",
       ".amb-error{margin:0 0 12px;padding:9px 11px;border:1px solid var(--dsw-alias-state-error-primary);border-radius:7px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-state-error-primary);font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}",
       ".amb-card{border:1px solid var(--dsw-alias-border-l1);border-radius:10px;background:var(--dsw-alias-bg-layer-1);margin:0 0 14px;overflow:hidden}",
-      ".amb-card-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--dsw-alias-border-l1)}",
-      ".amb-source-title{font-size:14px;font-weight:650;line-height:1.35}.amb-source-meta{color:var(--dsw-alias-label-secondary);font-size:11px;margin-top:3px;overflow-wrap:anywhere}",
-      ".amb-spacer{flex:1}.amb-badge{display:inline-flex;align-items:center;gap:5px;min-height:22px;padding:0 7px;border:1px solid var(--dsw-alias-border-l1);border-radius:999px;color:var(--dsw-alias-label-secondary);font-size:11px;white-space:nowrap}",
+      ".amb-jnpm-selector{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 10px;padding:0 2px}.amb-jnpm-selector .amb-select{min-width:180px}.amb-credential .amb-footer-status{margin-left:0}",
+      ".amb-card-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;padding:12px 14px;border:0;border-bottom:1px solid var(--dsw-alias-border-l1);background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;box-sizing:border-box;transition:background .15s,border-color .15s}.amb-card-head:hover{background:var(--dsw-alias-bg-base)}.amb-card.collapsed>.amb-card-head{border-bottom-color:transparent}",
+      ".amb-source-heading{min-width:0}.amb-source-title{display:block;font-size:14px;font-weight:650;line-height:1.35}.amb-source-meta{display:block;color:var(--dsw-alias-label-secondary);font-size:11px;margin-top:3px;overflow-wrap:anywhere}",
+      ".amb-card-content[hidden]{display:none}.amb-card-chevron{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;color:var(--dsw-alias-label-secondary);font-size:20px;line-height:1;transform:rotate(90deg);transition:transform .15s}.amb-card.collapsed .amb-card-chevron{transform:rotate(0)}",
+      ".amb-spacer{flex:1}.amb-badge{display:inline-flex;align-items:center;gap:5px;min-height:22px;padding:0 7px;border:1px solid var(--dsw-alias-border-l1);border-radius:999px;color:var(--dsw-alias-label-secondary);font-size:11px;white-space:nowrap}.amb-badge.dirty{border-color:var(--dsw-alias-state-warn-primary);color:var(--dsw-alias-state-warn-primary)}",
       ".amb-dot{width:6px;height:6px;border-radius:50%;background:var(--dsw-alias-label-secondary)}.amb-badge.connected{border-color:var(--dsw-alias-state-success-primary);color:var(--dsw-alias-state-success-primary)}.amb-badge.connected .amb-dot{background:var(--dsw-alias-state-success-primary)}.amb-badge.degraded{border-color:var(--dsw-alias-state-warn-primary);color:var(--dsw-alias-state-warn-primary)}.amb-badge.degraded .amb-dot{background:var(--dsw-alias-state-warn-primary)}.amb-badge.error{border-color:var(--dsw-alias-state-error-primary);color:var(--dsw-alias-state-error-primary)}.amb-badge.error .amb-dot{background:var(--dsw-alias-state-error-primary)}",
       ".amb-card-body{padding:4px 14px 8px}.amb-source-diagnostic{margin:0 0 8px;padding:7px 9px;border-left:3px solid var(--dsw-alias-state-warn-primary);border-radius:4px;background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-secondary);font-size:11px;overflow-wrap:anywhere}.amb-group{padding:12px 0;border-bottom:1px solid var(--dsw-alias-border-l1)}.amb-group:last-of-type{border-bottom:0}.amb-group-title{font-size:12px;font-weight:650;margin:0 0 3px}.amb-group-desc{font-size:11px;color:var(--dsw-alias-label-secondary);margin:0 0 9px;max-width:660px}",
       ".amb-field{padding:10px 0;border-top:1px dashed var(--dsw-alias-border-l1)}.amb-field:first-of-type{border-top:0;padding-top:4px}.amb-field-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}.amb-label{font-size:12px;font-weight:600;color:var(--dsw-alias-label-primary)}.amb-req{font-size:10px;color:var(--dsw-alias-state-warn-primary);border:1px solid var(--dsw-alias-state-warn-primary);border-radius:4px;padding:0 4px;margin-left:5px}.amb-hint{display:block;color:var(--dsw-alias-label-secondary);font-size:11px;margin-top:3px;max-width:650px}.amb-control{display:flex;align-items:center;gap:7px;flex-wrap:wrap}",
@@ -209,7 +277,7 @@ window.__ModuleLoader__.load({
       ".amb-skeleton{padding:24px;text-align:center;color:var(--dsw-alias-label-secondary);font-size:12px}",
       "@media(max-width:640px){.amb-page{padding-bottom:24px}.amb-head{flex-direction:column;gap:10px}.amb-card-head,.amb-card-body,.amb-card-footer{padding-left:10px;padding-right:10px}.amb-input,.amb-select{min-width:0;width:100%}.amb-auth-detail{margin-left:0;text-align:left;flex-basis:100%}}",
       "@media(max-width:760px){.amb-picker-overlay{padding:0}.amb-picker-drawer{width:100vw;height:100vh;max-height:none;border-radius:0;border:0}.amb-picker-main{display:flex;flex-direction:column;overflow:auto}.amb-picker-pane{min-height:300px}.amb-picker-pane + .amb-picker-pane{border-left:0;border-top:1px solid var(--dsw-alias-border-l1)}.amb-picker-list,.amb-picker-selected-list{max-height:280px}.amb-picker-foot-hint{display:none}}",
-      "@media(prefers-reduced-motion:reduce){.amb-btn,.amb-switch-track,.amb-switch-thumb{transition:none}}",
+      "@media(prefers-reduced-motion:reduce){.amb-btn,.amb-card-head,.amb-card-chevron,.amb-switch-track,.amb-switch-thumb{transition:none}}",
     ].join("");
 
     function localeIsZh() {
@@ -222,6 +290,14 @@ window.__ModuleLoader__.load({
         return localeIsZh() ? (value.zh || value.en || fallback || "") : (value.en || value.zh || fallback || "");
       }
       return fallback || "";
+    }
+    function sourceText(sourceKey, key) {
+      if (String(sourceKey || "").startsWith("jnpm:")) {
+        var projectKey = key + "Projects";
+        var localized = t(projectKey);
+        if (localized !== projectKey) return localized;
+      }
+      return t(key);
     }
     function errorText(error) { return String(error && error.message ? error.message : error || "unknown error"); }
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
@@ -308,11 +384,11 @@ window.__ModuleLoader__.load({
               }).concat(values.length > shown.length
                 ? [h("span", { className: "amb-chip", key: "__more" }, "+" + String(values.length - shown.length))]
                 : [])) : null,
-              h("div", { className: "amb-selected-text" }, t("selectedSummary").replace("{n}", String(values.length)))
+              h("div", { className: "amb-selected-text" }, sourceText(props.sourceKey, "selectedSummary").replace("{n}", String(values.length)))
             )
             : h("p", { className: "amb-empty-inline" }, t("noValues")),
           h("div", { className: "amb-control" },
-            h("button", { type: "button", className: "amb-btn primary", onClick: function () { props.onSuggest(); } }, values.length ? t("manageSelected") : t("chooseConversations"))
+            h("button", { type: "button", className: "amb-btn primary", onClick: function () { props.onSuggest(); } }, values.length ? t("manageSelected") : sourceText(props.sourceKey, "chooseConversations"))
           )
         );
       }
@@ -353,7 +429,7 @@ window.__ModuleLoader__.load({
       for (var i = 0; i < items.length; i += 1) itemMap[items[i].value] = items[i];
       var selectedItems = selected.map(function (value) {
         var item = itemMap[value];
-        return { value: value, label: item && item.label ? item.label : (labelFor(picker.sourceKey, value) || t("configuredConversation")) };
+        return { value: value, label: item && item.label ? item.label : (labelFor(picker.sourceKey, value) || sourceText(picker.sourceKey, "configuredConversation")) };
       });
       function toggle(value) {
         setSelected(selected.indexOf(value) >= 0
@@ -380,22 +456,22 @@ window.__ModuleLoader__.load({
         className: "amb-picker-overlay",
         onMouseDown: function (event) { if (event.target === event.currentTarget) props.onClose(); },
       },
-        h("div", { className: "amb-picker-drawer", role: "dialog", "aria-modal": "true", "aria-label": t("pickerTitle") },
+        h("div", { className: "amb-picker-drawer", role: "dialog", "aria-modal": "true", "aria-label": sourceText(picker.sourceKey, "pickerTitle") },
           h("div", { className: "amb-picker-head" },
             h("div", { style: { flex: 1, minWidth: 0 } },
-              h("div", { className: "amb-picker-title" }, t("pickerTitle")),
-              h("div", { className: "amb-picker-sub" }, t("pickerSubtitle"))
+              h("div", { className: "amb-picker-title" }, sourceText(picker.sourceKey, "pickerTitle")),
+              h("div", { className: "amb-picker-sub" }, sourceText(picker.sourceKey, "pickerSubtitle"))
             ),
             h("button", { type: "button", className: "amb-btn", "aria-label": t("pickerClose"), onClick: props.onClose }, "×")
           ),
           h("div", { className: "amb-picker-main" },
             h("div", { className: "amb-picker-pane" },
-              h("div", { className: "amb-picker-pane-head" }, t("pickerAvailable"), h("span", { className: "amb-picker-pane-note" }, t("pickerSortHint")), h("span", { className: "amb-spacer" }), picker.loading ? h("span", null, t("refreshing")) : null),
+              h("div", { className: "amb-picker-pane-head" }, sourceText(picker.sourceKey, "pickerAvailable"), h("span", { className: "amb-picker-pane-note" }, sourceText(picker.sourceKey, "pickerSortHint")), h("span", { className: "amb-spacer" }), picker.loading ? h("span", null, t("refreshing")) : null),
               h("div", { className: "amb-picker-search" },
                 h("input", {
                   className: "amb-input grow",
                   value: query,
-                  placeholder: t("pickerSearch"),
+                  placeholder: sourceText(picker.sourceKey, "pickerSearch"),
                   autoFocus: true,
                   onChange: function (event) { setQuery(event.target.value); },
                   onKeyDown: function (event) { if (event.key === "Enter") { event.preventDefault(); props.onSearch(query); } },
@@ -405,7 +481,7 @@ window.__ModuleLoader__.load({
               picker.error ? h("div", { className: "amb-error", style: { margin: "8px 12px" } }, picker.error) : null,
               h("div", { className: "amb-picker-list" },
                 picker.loading && !items.length ? h("div", { className: "amb-picker-empty" }, t("loading")) :
-                !items.length ? h("div", { className: "amb-picker-empty" }, t("pickerEmpty")) :
+                !items.length ? h("div", { className: "amb-picker-empty" }, sourceText(picker.sourceKey, "pickerEmpty")) :
                 items.map(function (item) {
                   var on = selected.indexOf(item.value) >= 0;
                   return h("button", {
@@ -417,7 +493,7 @@ window.__ModuleLoader__.load({
                   },
                     h("span", { className: "amb-picker-check", "aria-hidden": "true" }, on ? "✓" : ""),
                     h("div", { className: "amb-picker-info" },
-                      h("div", { className: "amb-picker-name" }, item.label || t("pickerUnnamed")),
+                      h("div", { className: "amb-picker-name" }, item.label || sourceText(picker.sourceKey, "pickerUnnamed")),
                       item.description ? h("div", { className: "amb-picker-desc" }, kindLabel(item.description)) : null
                     )
                   );
@@ -429,7 +505,7 @@ window.__ModuleLoader__.load({
             ),
             h("div", { className: "amb-picker-pane" },
               h("div", { className: "amb-picker-pane-head" },
-                h("span", null, t("pickerSelected").replace("{n}", String(selected.length))),
+                h("span", null, sourceText(picker.sourceKey, "pickerSelected").replace("{n}", String(selected.length))),
                 h("span", { className: "amb-spacer" }),
                 selected.length ? h("button", { type: "button", className: "amb-btn", onClick: function () { setSelected([]); } }, t("pickerClear")) : null
               ),
@@ -439,12 +515,12 @@ window.__ModuleLoader__.load({
                     h("span", { className: "amb-picker-selected-name", title: item.label }, item.label),
                     h("button", { type: "button", "aria-label": t("remove") + " " + item.label, onClick: function () { toggle(item.value); } }, "×")
                   );
-                }) : h("div", { className: "amb-picker-empty" }, t("pickerNoSelected"))
+                }) : h("div", { className: "amb-picker-empty" }, sourceText(picker.sourceKey, "pickerNoSelected"))
               )
             )
           ),
           h("div", { className: "amb-picker-foot" },
-            h("span", { className: "amb-picker-foot-hint" }, t("pickerHint")),
+            h("span", { className: "amb-picker-foot-hint" }, sourceText(picker.sourceKey, "pickerHint")),
             h("button", { type: "button", className: "amb-btn", onClick: props.onClose }, t("pickerCancel")),
             h("button", { type: "button", className: "amb-btn primary", onClick: function () { props.onApply(selected); } }, t("pickerApply") + (selected.length ? " (" + String(selected.length) + ")" : ""))
           )
@@ -549,11 +625,115 @@ window.__ModuleLoader__.load({
       );
     }
 
+    var JNPM_TOKEN_REFS = {
+      prod: "JNPM_PROD_PRIVATE_TOKEN",
+      gz: "JNPM_GZ_PRIVATE_TOKEN",
+      hgame: "JNPM_HGAME_PRIVATE_TOKEN",
+      neon: "JNPM_NEON_PRIVATE_TOKEN",
+    };
+
+    function CredentialPanel(props) {
+      var source = props.source;
+      var definition = props.definition || {};
+      var ref = definition.ref || JNPM_TOKEN_REFS[source.instance];
+      var secret = definition.secret !== false;
+      var tokenPair = React.useState("");
+      var token = tokenPair[0];
+      var setToken = tokenPair[1];
+      var infoPair = React.useState(null);
+      var info = infoPair[0];
+      var setInfo = infoPair[1];
+      var busyPair = React.useState(false);
+      var busy = busyPair[0];
+      var setBusy = busyPair[1];
+      var messagePair = React.useState(null);
+      var message = messagePair[0];
+      var setMessage = messagePair[1];
+      React.useEffect(function () {
+        var active = true;
+        setInfo(null);
+        setMessage(null);
+        setToken("");
+        props.actions.describe(ref).then(function (value) {
+          if (active) setInfo(value);
+        }).catch(function (error) {
+          if (active) setMessage({ kind: "error", text: t("credentialStatusFailed") + ": " + errorText(error) });
+        });
+        return function () { active = false; };
+      }, [source.sourceKey, ref]);
+      async function saveToken() {
+        var value = token.trim();
+        if (!value || busy) return;
+        setBusy(true);
+        setMessage(null);
+        try {
+          await props.actions.set(ref, value);
+          setToken("");
+          var next = await props.actions.describe(ref);
+          setInfo(next);
+          setMessage({ kind: "ok", text: t("credentialSaved") });
+        } catch (error) {
+          setMessage({ kind: "error", text: t("credentialSaveFailed") + ": " + errorText(error) });
+        } finally {
+          setBusy(false);
+        }
+      }
+      async function clearToken() {
+        if (busy) return;
+        setBusy(true);
+        setMessage(null);
+        try {
+          await props.actions.unset(ref);
+          var next = await props.actions.describe(ref);
+          setInfo(next);
+          setMessage({ kind: "ok", text: next && next.configured ? t("credentialClearedFallback") : t("credentialCleared") });
+        } catch (error) {
+          setMessage({ kind: "error", text: t("credentialClearFailed") + ": " + errorText(error) });
+        } finally {
+          setBusy(false);
+        }
+      }
+      var readOnly = info && info.writable === false;
+      return h("div", { className: "amb-note-card amb-credential" },
+        h("div", { className: "amb-note-card-head" },
+          h("span", { className: "amb-note-card-title" }, pick(definition.labelI18n, t("credentialTitle"))),
+          h("span", { className: "amb-spacer" }),
+          h("span", { className: "amb-badge " + (info && info.configured ? "connected" : "") },
+            h("span", { className: "amb-dot" }), info && info.configured ? t("credentialConfigured") : t("credentialMissing"))
+        ),
+        h("div", { className: "amb-hint" }, pick(definition.hintI18n, t("credentialHint"))),
+        h("div", { className: "amb-control", style: { marginTop: "8px" } },
+          h("input", {
+            className: "amb-input grow",
+            type: secret ? "password" : "text",
+            value: token,
+            placeholder: pick(definition.placeholderI18n, t("credentialPlaceholder")),
+            autoComplete: "off",
+            disabled: busy || readOnly,
+            onChange: function (event) { setToken(event.target.value); },
+          }),
+          h("button", { type: "button", className: "amb-btn primary", disabled: busy || readOnly || !token.trim(), onClick: saveToken }, t("credentialSave")),
+          h("button", { type: "button", className: "amb-btn danger", disabled: busy || readOnly || !info || !info.configured, onClick: clearToken }, t("credentialClear"))
+        ),
+        info && info.source ? h("div", { className: "amb-hint", style: { marginTop: "6px" } }, t("credentialSource") + ": " + info.source + (readOnly ? " · " + t("credentialReadOnly") : "")) : null,
+        readOnly && !(info && info.source) ? h("div", { className: "amb-hint", style: { marginTop: "6px" } }, t("credentialReadOnly")) : null,
+        message ? h("div", { className: "amb-footer-status " + (message.kind === "error" ? "error" : "ok"), style: { marginTop: "6px" } }, message.text) : null
+      );
+    }
+
     function SourceCard(props) {
       var source = props.source;
       var draft = props.draft;
       var dirty = JSON.stringify(draft) !== JSON.stringify(source.config);
+      var collapsedPair = React.useState(true);
+      var collapsed = collapsedPair[0];
+      var setCollapsed = collapsedPair[1];
+      var sourceName = source.displayName || source.sourceId;
+      var contentId = "amb-source-" + String(source.sourceKey).replace(/[^a-zA-Z0-9_-]/g, "-") + "-content";
       var picker = props.picker && props.picker.sourceKey === source.sourceKey ? props.picker : null;
+      var credentialDefinitions = Array.isArray(source.settings.credentials)
+        ? source.settings.credentials
+        : (source.sourceId === "jnpm" ? [{ ref: JNPM_TOKEN_REFS[source.instance] }] : []);
       React.useEffect(function () {
         var groups = source.settings.groups || [];
         for (var i = 0; i < groups.length; i += 1) {
@@ -567,15 +747,26 @@ window.__ModuleLoader__.load({
           }
         }
       }, [draft.identityMode]);
-      return h("section", { className: "amb-card" },
-        h("div", { className: "amb-card-head" },
-          h("div", null,
-            h("div", { className: "amb-source-title" }, source.displayName || source.sourceId),
-            h("div", { className: "amb-source-meta" }, t("instance") + ": " + source.instance + " · " + t("revision") + ": " + source.revision)
+      return h("section", { className: "amb-card" + (collapsed ? " collapsed" : "") },
+        h("button", {
+          type: "button",
+          className: "amb-card-head",
+          "aria-expanded": collapsed ? "false" : "true",
+          "aria-controls": contentId,
+          "aria-label": (collapsed ? t("expandSource") : t("collapseSource")) + ": " + sourceName,
+          title: collapsed ? t("expandSource") : t("collapseSource"),
+          onClick: function () { setCollapsed(!collapsed); },
+        },
+          h("span", { className: "amb-source-heading" },
+            h("span", { className: "amb-source-title" }, sourceName),
+            h("span", { className: "amb-source-meta" }, t("instance") + ": " + source.instance + " · " + t("revision") + ": " + source.revision)
           ),
           h("span", { className: "amb-spacer" }),
-          h("span", { className: "amb-badge " + badgeClass(source.status.state) }, h("span", { className: "amb-dot" }), statusLabel(source.status.state))
+          dirty && collapsed ? h("span", { className: "amb-badge dirty" }, t("unsaved")) : null,
+          h("span", { className: "amb-badge " + badgeClass(source.status.state) }, h("span", { className: "amb-dot" }), statusLabel(source.status.state)),
+          h("span", { className: "amb-card-chevron", "aria-hidden": "true" }, "›")
         ),
+        h("div", { id: contentId, className: "amb-card-content", hidden: collapsed },
         h("div", { className: "amb-card-body" },
           source.configError ? h("div", { className: "amb-error" }, t("configInvalid") + ": " + source.configError) : null,
           source.status.detail && (source.status.state === "degraded" || source.status.state === "error")
@@ -606,6 +797,16 @@ window.__ModuleLoader__.load({
             onLoadMore: props.onPickerLoadMore,
             onApply: props.onPickerApply,
           }) : null,
+          credentialDefinitions.length ? h("div", { className: "amb-group" },
+            credentialDefinitions.map(function (definition) {
+              return h(CredentialPanel, {
+                key: definition.ref,
+                source: source,
+                definition: definition,
+                actions: props.credentialActions,
+              });
+            })
+          ) : null,
           source.settings.auth ? h("div", { className: "amb-group" },
             h(AuthPanel, { source: source, result: props.authResult, busy: props.authBusy, onCheck: props.onAuth })
           ) : null
@@ -616,6 +817,7 @@ window.__ModuleLoader__.load({
           h("span", { className: "amb-footer-status " + (props.message && props.message.kind === "error" ? "error" : props.message && props.message.kind === "ok" ? "ok" : "") },
             props.message ? props.message.text : (dirty ? t("unsaved") : t("saved"))
           )
+        )
         )
       );
     }
@@ -632,7 +834,26 @@ window.__ModuleLoader__.load({
       var authPair = React.useState({}); var authResults = authPair[0]; var setAuthResults = authPair[1];
       var authBusyPair = React.useState(""); var authBusy = authBusyPair[0]; var setAuthBusy = authBusyPair[1];
       var pickerPair = React.useState(null); var picker = pickerPair[0]; var setPicker = pickerPair[1];
+      var jnpmInstancePair = React.useState("prod");
+      var jnpmInstance = jnpmInstancePair[0];
+      var setJnpmInstance = jnpmInstancePair[1];
       var labelTickPair = React.useState(0); var setLabelTick = labelTickPair[1];
+      function credentialValue(response) {
+        if (!response || response.ok !== true) throw new Error(response && response.error && response.error.message ? response.error.message : "Credential operation failed");
+        return response.value;
+      }
+      var credentialActions = {
+        async describe(ref) {
+          var value = credentialValue(await ctx.remote.credentials.describe([ref]));
+          return value[ref];
+        },
+        async set(ref, value) {
+          credentialValue(await ctx.remote.credentials.set(ref, value));
+        },
+        async unset(ref) {
+          credentialValue(await ctx.remote.credentials.unset(ref));
+        },
+      };
 
       function resetDrafts(payload) {
         var next = {};
@@ -722,7 +943,7 @@ window.__ModuleLoader__.load({
           setPicker(Object.assign({}, context, { items: result.result.items || [], loading: false, hasMore: result.result.hasMore === true, nextToken: result.result.nextToken || "" }));
         } catch (failure) {
           if (seq !== PICKER_SEARCH_SEQ) return;
-          setPicker(Object.assign({}, context, { loading: false, error: t("pickerLoadFailed") + ": " + errorText(failure) }));
+          setPicker(Object.assign({}, context, { loading: false, error: sourceText(picker.sourceKey, "pickerLoadFailed") + ": " + errorText(failure) }));
         }
       }
       async function searchPicker(query) {
@@ -801,6 +1022,34 @@ window.__ModuleLoader__.load({
       var sources = data && data.sources ? data.sources : [];
       var overview = data && data.overview ? data.overview : {};
       var pending = overview.deliveryStates ? (overview.deliveryStates.queued || 0) + (overview.deliveryStates.deferred || 0) : 0;
+      var jnpmSources = sources.filter(function (source) { return source.sourceId === "jnpm"; });
+      var otherSources = sources.filter(function (source) { return source.sourceId !== "jnpm"; });
+      var selectedJnpm = jnpmSources.find(function (source) { return source.instance === jnpmInstance; }) || jnpmSources[0];
+      var visibleSourceCount = otherSources.length + (jnpmSources.length ? 1 : 0);
+      function renderSourceCard(source) {
+        var draft = drafts[source.sourceKey] || clone(source.config);
+        return h(SourceCard, {
+          key: source.sourceKey,
+          source: source,
+          draft: draft,
+          saving: saving === source.sourceKey,
+          message: messages[source.sourceKey],
+          authResult: authResults[source.sourceKey],
+          authBusy: authBusy === source.sourceKey,
+          picker: picker,
+          credentialActions: credentialActions,
+          onField: function (key, value) { updateField(source.sourceKey, key, value); },
+          onSave: function () { save(source); },
+          onRevert: function () { revert(source); },
+          onAuth: function () { checkAuth(source); },
+          onSuggest: function (field) { openPicker(source, field); },
+          onLoadLabels: loadLabels,
+          onPickerClose: closePicker,
+          onPickerSearch: searchPicker,
+          onPickerLoadMore: loadMorePicker,
+          onPickerApply: applyPicker,
+        });
+      }
       return h("div", { className: "amb-page" },
         h("header", { className: "amb-head" },
           h("div", { className: "amb-head-main" },
@@ -813,34 +1062,27 @@ window.__ModuleLoader__.load({
           h("span", { className: "amb-stat" }, t("overviewMails") + " ", h("b", null, overview.mails || 0)),
           h("span", { className: "amb-stat" }, t("overviewPending") + " ", h("b", null, pending)),
           h("span", { className: "amb-stat" }, t("overviewSubscriptions") + " ", h("b", null, overview.subscriptions || 0)),
-          h("span", { className: "amb-footer-status" }, sources.length + " " + t("sourceCount"))
+          h("span", { className: "amb-footer-status" }, visibleSourceCount + " " + t("sourceCount"))
         ),
         h("div", { className: "amb-note" }, h("span", { "aria-hidden": "true" }, "!"), h("span", null, t("security") + " " + t("localOnly"))),
         error ? h("div", { className: "amb-error" }, error) : null,
         !sources.length ? h("div", { className: "amb-card" }, h("div", { className: "amb-skeleton" }, h("div", { style: { fontWeight: 600, marginBottom: "4px" } }, t("noSources")), h("div", null, t("noSourcesHint")))) : null,
-        sources.map(function (source) {
-          var draft = drafts[source.sourceKey] || clone(source.config);
-          return h(SourceCard, {
-            key: source.sourceKey,
-            source: source,
-            draft: draft,
-            saving: saving === source.sourceKey,
-            message: messages[source.sourceKey],
-            authResult: authResults[source.sourceKey],
-            authBusy: authBusy === source.sourceKey,
-            picker: picker,
-            onField: function (key, value) { updateField(source.sourceKey, key, value); },
-            onSave: function () { save(source); },
-            onRevert: function () { revert(source); },
-            onAuth: function () { checkAuth(source); },
-            onSuggest: function (field) { openPicker(source, field); },
-            onLoadLabels: loadLabels,
-            onPickerClose: closePicker,
-            onPickerSearch: searchPicker,
-            onPickerLoadMore: loadMorePicker,
-            onPickerApply: applyPicker,
-          });
-        })
+        otherSources.map(renderSourceCard),
+        selectedJnpm ? h("div", { className: "amb-jnpm-group", key: "jnpm-group" },
+          h("div", { className: "amb-jnpm-selector" },
+            h("span", { className: "amb-group-title" }, t("jnpmGroupTitle")),
+            h("span", { className: "amb-spacer" }),
+            h("label", { className: "amb-hint" }, t("jnpmEnvironment")),
+            h("select", {
+              className: "amb-select",
+              value: selectedJnpm.instance,
+              onChange: function (event) { setJnpmInstance(event.target.value); },
+            }, jnpmSources.map(function (source) {
+              return h("option", { key: source.sourceKey, value: source.instance }, source.displayName || source.instance);
+            }))
+          ),
+          renderSourceCard(selectedJnpm)
+        ) : null
       );
     }
 
@@ -857,7 +1099,7 @@ window.__ModuleLoader__.load({
     }
 
     exports.apply = apply;
-    exports.inject = ["slots", "locale"];
+    exports.inject = ["slots", "locale", "remote", "remote.credentials"];
     return module.exports;
   }
 });

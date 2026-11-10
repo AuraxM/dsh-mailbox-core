@@ -1,4 +1,5 @@
 import { normalizeConfig } from "./lib/config.js";
+import { PtcFilterRuntime } from "./lib/filter-runtime.js";
 import { AgentMailbox } from "./lib/mailbox.js";
 import { createSettingsRouter } from "./lib/settings-api.js";
 import { MailboxRepository } from "./lib/store.js";
@@ -18,14 +19,29 @@ export async function apply(ctx, rawConfig = {}) {
     }
   };
   const repository = await MailboxRepository.open(ctx.storageDomain, Date.now);
+  let filterRuntime;
+  try {
+    filterRuntime = await PtcFilterRuntime.open({ getPtcRuntime: () => ctx.get?.("ptcRuntime"), timeoutMs: config.filterTimeoutMs });
+  } catch (error) {
+    await repository.close();
+    throw error;
+  }
   const service = new AgentMailbox({
     repository,
     config,
+    filterRuntime,
     now: Date.now,
     logger,
     timer: ctx.timer,
     flush: (session) => ctx.sessions.flush(session),
   });
+  try {
+    await service.pruneExpired();
+  } catch (error) {
+    await service.close();
+    logger("error", `agent-mailbox: initial retention cleanup failed: ${errorMessage(error)}`);
+    throw error;
+  }
   const scopedDisposers = new Map();
   let archiveChain = Promise.resolve();
 

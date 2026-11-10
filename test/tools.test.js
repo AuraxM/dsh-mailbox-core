@@ -5,12 +5,15 @@ import { MemoryGlobal } from "./helpers.js";
 import { createMailboxTools, MAILBOX_PROMPT } from "../lib/tools.js";
 import { createCore, deliveries, envelope, registerLark, subscribe } from "./helpers.js";
 
-test("exactly seven model tools are exposed with current-Session implicit ownership", async (t) => {
+test("exactly ten model tools are exposed with current-Session implicit ownership", async (t) => {
   const { service } = createCore();
   t.after(() => service.close());
   const tools = createMailboxTools(service);
   assert.deepEqual(tools.map((tool) => tool.name), [
     "mailbox_sources",
+    "mailbox_filter_reference",
+    "mailbox_field_values",
+    "mailbox_filter_test",
     "mailbox_subscribe",
     "mailbox_subscriptions",
     "mailbox_subscription_update",
@@ -165,7 +168,7 @@ test("Host adapter cleans per-Agent tools, timers, service, and Domain on teardo
   const agent = { id: "session-a", status: "idle", session: { snapshotEvents: () => [] } };
   const harness = lifecycleContext(agent, global);
   await apply(harness.ctx, { recoveryIntervalMs: 1000, mergeWindowMs: 0 });
-  assert.equal(harness.activeTools.size, 7);
+  assert.equal(harness.activeTools.size, 10);
   assert.ok(harness.ctx.service);
   const source = harness.ctx.service.registerSource({
     sourceId: "lark", instance: "main", displayName: "Lark", kinds: ["message.received"], filterFields: ["kinds"], capabilities: {},
@@ -176,4 +179,26 @@ test("Host adapter cleans per-Agent tools, timers, service, and Domain on teardo
   assert.equal(harness.activeTimers.size, 0);
   assert.equal(harness.domain.closed, true);
   assert.equal((await source.publish(envelope("after-teardown"))).status, "rejected");
+});
+
+test("Host startup removes already expired Mail while preserving its dedup marker", async () => {
+  const global = new MemoryGlobal();
+  const expiredAt = new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString();
+  global.value.mails.mail_expired = { mailId: "mail_expired", mailSeq: 1, receivedAt: expiredAt, occurredAt: expiredAt };
+  global.value.deliveries.dlv_expired = {
+    deliveryId: "dlv_expired", deliverySeq: 1, mailId: "mail_expired", sessionId: "session-a",
+    matchedSubscriptionIds: [], state: "delivered", updatedAt: expiredAt, injectionHistory: [],
+  };
+  global.value.dedup[JSON.stringify(["lark", "main", "expired"])] = { mailId: "mail_expired", deliveryCount: 1, receivedAt: expiredAt };
+  const agent = { id: "session-a", status: "idle", session: { snapshotEvents: () => [] } };
+  const harness = lifecycleContext(agent, global);
+  await apply(harness.ctx, { recoveryIntervalMs: 0 });
+  try {
+    assert.equal(Object.keys(global.value.mails).length, 0);
+    assert.equal(Object.keys(global.value.deliveries).length, 0);
+    assert.equal(Object.keys(global.value.dedup).length, 1);
+    assert.equal(harness.ctx.service.sourceAdminSnapshot().overview.mails, 0);
+  } finally {
+    for (const dispose of harness.effects.reverse()) await dispose();
+  }
 });

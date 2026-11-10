@@ -39,10 +39,10 @@ export function testConfig(overrides = {}) {
   });
 }
 
-export function createCore({ global = new MemoryGlobal(), config = testConfig(), flush = async () => true, now = Date.now } = {}) {
+export function createCore({ global = new MemoryGlobal(), config = testConfig(), flush = async () => true, now = Date.now, filterRuntime, timer } = {}) {
   const repository = new MailboxRepository({ global, now });
-  const service = new AgentMailbox({ repository, config, now, flush });
-  return { global, repository, service, config };
+  const service = new AgentMailbox({ repository, config, now, flush, filterRuntime, timer });
+  return { global, repository, service, config, filterRuntime };
 }
 
 export function registerLark(service) {

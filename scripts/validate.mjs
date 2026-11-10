@@ -3,7 +3,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 const manifest = JSON.parse(readFileSync("package.json", "utf8"));
 const required = [
   "index.js", "client.js", "cordis.patch.yml", "locale/en.json", "locale/zh.json",
-  "icon.svg", "README.md", "lib/settings-api.js", "lib/source-settings.js",
+  "icon.svg", "README.md", "lib/settings-api.js", "lib/source-settings.js", "lib/filter-runtime.js", "lib/retention.js",
   "scripts/validate.mjs",
 ];
 for (const file of required) {
